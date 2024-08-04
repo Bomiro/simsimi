@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SimSimi API Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            text-align: right;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: right;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SimSimi API Form</h1>
+        <form id="simsimiForm">
+            <label for="message_sentence">خانة 1: عندما يحاول شخص أن يسأل</label>
+            <input type="text" id="message_sentence" name="message_sentence" required>
+            
+            <label for="answer_sentence">خانة 2: سمسمي سوف يجيب</label>
+            <input type="text" id="answer_sentence" name="answer_sentence" required>
+            
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('simsimiForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const messageSentence = document.getElementById('message_sentence').value;
+            const answerSentence = document.getElementById('answer_sentence').value;
+
+            const data = {
+                lc: 'ar',
+                message_sentence: messageSentence,
+                answer_sentence: answerSentence
+            };
+
+            fetch('https://simsimi.com/api/teach', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Data sent successfully!');
+            })
+            .catch(error => {
+                alert('Error sending data: ' + error);
+            });
+        });
+    </script>
+</body>
+  </html>
+  
