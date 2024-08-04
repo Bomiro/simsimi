@@ -1,105 +1,122 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SimSimi API Form</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teach SimSimi</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
 
-        .container {
-            background-color: #fff;
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
+    .container {
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
 
-        h1 {
-            margin-bottom: 20px;
-        }
+    .form-group {
+      margin-bottom: 15px;
+    }
 
-        label {
-            display: block;
-            text-align: right;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+    }
 
-        input {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: right;
-        }
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #333;
+      color: #e0e0e0;
+    }
 
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: #007BFF;
-            color: #fff;
-            font-size: 16px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+    #sendButton {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-size: 16px;
+    }
 
-        button:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    #sendButton:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>SimSimi API Form</h1>
-        <form id="simsimiForm">
-            <label for="message_sentence">خانة 1: عندما يحاول شخص أن يسأل</label>
-            <input type="text" id="message_sentence" name="message_sentence" required>
-            
-            <label for="answer_sentence">خانة 2: سمسمي سوف يجيب</label>
-            <input type="text" id="answer_sentence" name="answer_sentence" required>
-            
-            <button type="submit">Submit</button>
-        </form>
+  <div class="container">
+    <div class="form-group">
+      <label for="question">خانة 1: عندما يحاول شخص أن يسأل</label>
+      <input type="text" id="question" placeholder="اكتب السؤال هنا...">
     </div>
+    <div class="form-group">
+      <label for="answer">خانة 2: سمسمي سوف يجيب</label>
+      <input type="text" id="answer" placeholder="اكتب الجواب هنا...">
+    </div>
+    <button id="sendButton">إرسال</button>
+  </div>
 
-    <script>
-        document.getElementById('simsimiForm').addEventListener('submit', function(event) {
-            event.preventDefault();
+  <script>
+    document.getElementById('sendButton').addEventListener('click', async () => {
+      const question = document.getElementById('question').value;
+      const answer = document.getElementById('answer').value;
 
-            const messageSentence = document.getElementById('message_sentence').value;
-            const answerSentence = document.getElementById('answer_sentence').value;
-
-            const data = {
-                lc: 'ar',
-                message_sentence: messageSentence,
-                answer_sentence: answerSentence
-            };
-
-            fetch('https://simsimi.com/api/teach', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert('Data sent successfully!');
-            })
-            .catch(error => {
-                alert('Error sending data: ' + error);
-            });
+      if (question.trim() && answer.trim()) {
+        const data = JSON.stringify({
+          "lc": "ar",
+          "message_sentence": question,
+          "answer_sentence": answer
         });
-    </script>
+
+        const options = {
+          method: 'POST',
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Encoding': 'gzip, deflate, br, zstd',
+            'sec-ch-ua': '"Not/A)Brand";v="8", "Chromium";v="126", "Brave";v="126"',
+            'content-type': 'application/json;charset=UTF-8',
+            'sec-ch-ua-mobile': '?1',
+            'sec-ch-ua-platform': '"Android"',
+            'sec-gpc': '1',
+            'accept-language': 'ar-MA,ar;q=0.9',
+            'origin': 'https://simsimi.com',
+            'sec-fetch-site': 'same-origin',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-dest': 'empty',
+            'referer': 'https://simsimi.com/teach',
+            'priority': 'u=1, i',
+            'Cookie': 'dotcom_session_key=s%3AEfDuYw0FBfooQWVyursD11_A1RZHbHQQ.x8a%2BrtrOG96b8oRdz4S3aIVAdMi9JtS5lgEjKgO3NIo; languageCode=ar; normalProb=2; doQuestion=true; i18n_redirected=ar; currentChatCnt=1; bubbleCount=2'
+          },
+          body: data
+        };
+
+        try {
+          const response = await fetch('https://simsimi.com/api/teach', options);
+          const result = await response.json();
+          console.log(result);
+          alert('تم إرسال البيانات بنجاح!');
+        } catch (error) {
+          console.error('Error:', error);
+          alert('حدث خطأ أثناء إرسال البيانات.');
+        }
+      } else {
+        alert('يرجى إدخال كلا من السؤال والجواب.');
+      }
+    });
+  </script>
 </body>
-  </html>
-  
+</html>
