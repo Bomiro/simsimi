@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WebSocket Chat</title>
+  <title>Chat with API</title>
   <style>
     /* Chat bubble styling */
     .chat-container {
@@ -98,29 +98,6 @@
     const messagesDiv = document.getElementById('messages');
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
-    let ws;
-
-    function initializeWebSocket() {
-      ws = new WebSocket('ws://localhost:3000');
-
-      ws.addEventListener('open', () => {
-        console.log('Connected to WebSocket server');
-      });
-
-      ws.addEventListener('message', (event) => {
-        const message = event.data;
-        displayMessage(message);
-      });
-
-      ws.addEventListener('close', () => {
-        console.log('Disconnected from WebSocket server');
-        setTimeout(initializeWebSocket, 1000); // Retry connection every 1 second
-      });
-
-      ws.addEventListener('error', (error) => {
-        console.error('WebSocket error:', error);
-      });
-    }
 
     sendButton.addEventListener('click', sendMessage);
     messageInput.addEventListener('keypress', (e) => {
@@ -131,8 +108,7 @@
 
     async function sendMessage() {
       const message = messageInput.value;
-      if (message.trim() && ws.readyState === WebSocket.OPEN) {
-        ws.send(message);
+      if (message.trim()) {
         displayMessage(message, true);
         messageInput.value = '';
 
@@ -171,9 +147,6 @@
       
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
-
-    // Initialize WebSocket connection
-    initializeWebSocket();
   </script>
 </body>
 </html>
