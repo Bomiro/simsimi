@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SimSimi Page</title>
+    <title>SimSimi Switch Pages</title>
     <style>
         body {
             margin: 0;
@@ -23,6 +23,12 @@
     </style>
 </head>
 <body>
-    <iframe src="https://simsimi.com/missa"></iframe>
+    <iframe id="simsimiIframe" src="https://simsimi.com/chat"></iframe>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('simsimiIframe').src = 'https://simsimi.com/missa';
+        }, 1000);
+    </script>
 </body>
 </html>
