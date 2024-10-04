@@ -128,7 +128,8 @@
             method: 'GET'
           });
           const data = await response.json();
-          const apiResponse = data.data.response;
+        //  const apiResponse = data.data.response;
+          const apiResponse = data.response;
 
           // Display the API response as a received message
           displayMessage(apiResponse);
