@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chat with API</title>
   <style>
-    /* Chat bubble styling for dark mode */
+    /* Dark theme styles */
     body {
-      background-color: #121212; /* Dark background for the entire page */
-      color: #e0e0e0; /* Light text color */
+      background-color: #121212;
+      color: #e0e0e0;
       margin: 0;
       font-family: Arial, sans-serif;
     }
@@ -19,15 +19,16 @@
       height: 97vh;
       max-width: 600px;
       margin: auto;
-      border: 1px solid #333; /* Darker border */
-      background-color: #1e1e1e; /* Dark background for chat container */
+      border: 1px solid #333;
+      background-color: #1e1e1e;
     }
 
     .messages-container {
       flex-grow: 1;
       overflow-y: auto;
       padding: 10px;
-      background-color: #1e1e1e; /* Match background color */
+      background-color: #1e1e1e;
+      scroll-behavior: smooth;
     }
 
     .message-container {
@@ -37,12 +38,13 @@
     }
 
     .message-bubble {
-      background-color: #333; /* Dark bubble background */
-      padding: 10px 16px;
-      border-radius: 20px;
-      max-width: 60%;
+      background-color: #333;
+      padding: 12px 18px;
+      border-radius: 16px;
+      max-width: 70%;
+      font-size: 16px;
+      line-height: 1.5;
       word-wrap: break-word;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Darker shadow */
     }
 
     .sender-message-container {
@@ -58,7 +60,7 @@
       display: flex;
       align-items: center;
       padding: 10px;
-      background-color: #1e1e1e; /* Dark background for input area */
+      background-color: #1e1e1e;
     }
 
     #messageInput {
@@ -66,17 +68,17 @@
       margin-right: 6px;
       border: none;
       outline: none;
-      border-radius: 20px;
-      height: 40px;
+      border-radius: 24px;
+      height: 44px;
       font-size: 16px;
-      background-color: #333; /* Dark input background */
-      color: #e0e0e0; /* Light text color for input */
-      padding: 10px 16px;
+      background-color: #333;
+      color: #e0e0e0;
+      padding: 12px 18px;
     }
 
     #sendButton {
       background-color: #007bff;
-      border-radius: 20px;
+      border-radius: 24px;
       outline: none;
       border: none;
       padding: 10px 16px;
@@ -86,11 +88,18 @@
     }
 
     #sendButton:hover {
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Darker shadow on hover */
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
     }
 
     #sendButton:active {
       background-color: #0056b3;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      width: 50px;
+      height: 20px;
+      margin: 10px 0;
     }
   </style>
 </head>
@@ -115,26 +124,50 @@
       }
     });
 
+    function getRandomUserAgent() {
+      const userAgents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
+        "Mozilla/5.0 (Linux; Android 11; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Mobile Safari/537.36",
+        "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Version/14.1.1 Mobile/15E148 Safari/537.36"
+      ];
+      return userAgents[Math.floor(Math.random() * userAgents.length)];
+    }
+
     async function sendMessage() {
       const message = messageInput.value;
       if (message.trim()) {
         displayMessage(message, true);
         messageInput.value = '';
 
-        // Fetch response from the API
-        try {
-        //  const response = await fetch(`https://morocco.toystack.dev/api/other/simsimi?text=${encodeURIComponent(message)}&lc=ar&apikey=212024`, {
-            const response = await fetch(`https://plain-trista-bomi3-1c1e0005.koyeb.app/v3/api/ask?question=${encodeURIComponent(message)}&modul=cloude-sonnet-3.5&lc=ar&apikey=212024`, {
-            method: 'GET'
-          });
-          const data = await response.json();
-        //  const apiResponse = data.data.response;
-          const apiResponse = data.response;
+        // Show typing indicator
+        const typingIndicator = document.createElement('img');
+        typingIndicator.src = 'https://o.simsimi.com/_nuxt/img/typing_ani.5554abf.gif';
+        typingIndicator.classList.add('typing-indicator');
+        messagesDiv.appendChild(typingIndicator);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
-          // Display the API response as a received message
+        try {
+          const response = await fetch(`https://o.simsimi.com/api/chats?lc=ar&ft=1&normalProb=2&reqText=${encodeURIComponent(message)}&talkCnt=1`, {
+            method: 'GET',
+            headers: {
+              'accept': 'application/json, text/plain, */*',
+              'user-agent': getRandomUserAgent()
+            }
+          });
+
+          const data = await response.json();
+          const apiResponse = data?.simsimi_talk?.answer || "لم أفهم، حاول مرة أخرى!";
+
+          // Remove typing indicator
+          messagesDiv.removeChild(typingIndicator);
+
+          // Display API response
           displayMessage(apiResponse);
         } catch (error) {
           console.error('Error fetching API response:', error);
+          messagesDiv.removeChild(typingIndicator);
+          displayMessage("خطأ في الاتصال بالسيرفر!");
         }
       }
     }
@@ -143,19 +176,19 @@
       const messageContainer = document.createElement('div');
       const messageElement = document.createElement('div');
       messageElement.textContent = message;
-      
+
       messageContainer.classList.add('message-container');
-      
+
       if (isSender) {
         messageContainer.classList.add('sender-message-container');
         messageElement.classList.add('message-bubble', 'sender-message-bubble');
       } else {
         messageElement.classList.add('message-bubble');
       }
-      
+
       messageContainer.appendChild(messageElement);
       messagesDiv.appendChild(messageContainer);
-      
+
       messagesDiv.scrollTop = messagesDiv.scrollHeight;
     }
   </script>
