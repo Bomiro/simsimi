@@ -148,7 +148,7 @@
         messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
         try {
-          const response = await fetch(`https://o.simsimi.com/api/chats?lc=ar&ft=1&normalProb=2&reqText=${encodeURIComponent(message)}&talkCnt=1`, {
+          const response = await fetch(`https://simsimi.vn/web/simtalk?text=${encodeURIComponent(message)}&lc=ar&=`, {
             method: 'GET',
             headers: {
               'accept': 'application/json, text/plain, */*',
@@ -159,7 +159,7 @@
           });
 
           const data = await response.json();
-          const apiResponse = data?.respSentence || "لم أفهم، حاول مرة أخرى!";
+          const apiResponse = data?.success || "لم أفهم، حاول مرة أخرى!";
 
           messagesDiv.removeChild(typingIndicator);
 
